@@ -20,8 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'clash': ['Clash Display', 'sans-serif'],
-				'sans': ['Clash Display', 'sans-serif'],
+				'clash': ['Clash Display', 'system-ui', 'sans-serif'],
+				'sans': ['Clash Display', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

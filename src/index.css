@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Clash Display font */
+@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@200;300;400;500;600;700;800;900&display=swap');
+
 /* StartupGPT Enterprise Design System */
 
 @layer base {
@@ -37,7 +40,7 @@
 
     --radius: 0.75rem;
 
-    --sidebar-background: 255 255 255;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 210 17% 20%;
     --sidebar-primary: 199 86% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -93,7 +96,12 @@
   }
 
   body {
-    @apply bg-background text-foreground font-clash;
+    @apply bg-background text-foreground;
+    font-family: 'Clash Display', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Clash Display', sans-serif;
   }
 }
 
@@ -115,4 +123,15 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile responsive utilities */
+@media (max-width: 768px) {
+  .sidebar-mobile-hide {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-mobile-show {
+    transform: translateX(0);
+  }
 }
