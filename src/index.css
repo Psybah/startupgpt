@@ -40,11 +40,11 @@
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
+    --sidebar-background: 248 250 252;
     --sidebar-foreground: 210 17% 20%;
     --sidebar-primary: 199 86% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 17% 96%;
+    --sidebar-accent: 241 247 254;
     --sidebar-accent-foreground: 210 17% 20%;
     --sidebar-border: 214 32% 91%;
     --sidebar-ring: 199 86% 53%;
@@ -93,15 +93,20 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Clash Display', sans-serif !important;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Clash Display', sans-serif;
+    font-family: 'Clash Display', sans-serif !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Clash Display', sans-serif;
+    font-family: 'Clash Display', sans-serif !important;
+  }
+
+  input, textarea, select, button {
+    font-family: 'Clash Display', sans-serif !important;
   }
 }
 

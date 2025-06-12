@@ -1,419 +1,291 @@
-
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { FileText, Download, Eye, Loader2 } from 'lucide-react';
-import { Badge } from '../ui/badge';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '../ui/use-toast';
-
-interface DocumentFormData {
-  companyName: string;
-  founders: string;
-  businessType: string;
-  shareCapital: string;
-  registeredAddress: string;
-  businessObjects: string;
-}
+import { FileText, Download, Copy, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const DocumentGeneratorTab: React.FC = () => {
   const [selectedDocType, setSelectedDocType] = useState('');
-  const [formData, setFormData] = useState<DocumentFormData>({
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedDocument, setGeneratedDocument] = useState('');
+  const [formData, setFormData] = useState({
     companyName: '',
     founders: '',
-    businessType: '',
-    shareCapital: '',
-    registeredAddress: '',
-    businessObjects: ''
+    sector: '',
+    fundingStage: '',
+    additionalInfo: ''
   });
-  const [generatedDocument, setGeneratedDocument] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const { toast } = useToast();
 
   const documentTypes = [
-    {
-      id: 'shareholders-agreement',
-      title: 'Shareholders Agreement',
-      description: 'Comprehensive agreement for founder equity and governance',
-      category: 'Incorporation',
-      template: `SHAREHOLDERS AGREEMENT
-
-This Shareholders Agreement is made on [DATE] between the shareholders of [COMPANY_NAME], a company incorporated under the laws of the Federal Republic of Nigeria.
-
-PARTIES:
-[FOUNDERS_LIST]
-
-SHARE CAPITAL:
-The authorized share capital of the Company is ₦[SHARE_CAPITAL] divided into shares of ₦1.00 each.
-
-BUSINESS OBJECTS:
-[BUSINESS_OBJECTS]
-
-GOVERNANCE:
-1. Board of Directors shall consist of [BOARD_SIZE] directors
-2. Quorum for board meetings: [QUORUM]
-3. Decision making: Majority vote required
-
-TRANSFER RESTRICTIONS:
-1. Right of first refusal applies to all share transfers
-2. Pre-emption rights for existing shareholders
-3. Drag-along and tag-along provisions apply
-
-VESTING:
-Standard 4-year vesting with 1-year cliff applies to founder shares.
-
-This agreement is governed by Nigerian law and subject to Lagos jurisdiction.`
-    },
-    {
-      id: 'employment-contract',
-      title: 'Employment Contract',
-      description: 'Standard employment agreement template',
-      category: 'Contracts',
-      template: `EMPLOYMENT CONTRACT
-
-EMPLOYER: [COMPANY_NAME]
-EMPLOYEE: [EMPLOYEE_NAME]
-POSITION: [POSITION]
-
-TERMS OF EMPLOYMENT:
-1. Commencement: [START_DATE]
-2. Probation Period: 6 months
-3. Salary: ₦[SALARY] per month
-4. Working Hours: 40 hours per week
-
-DUTIES AND RESPONSIBILITIES:
-[JOB_DESCRIPTION]
-
-BENEFITS:
-- Annual leave: 21 working days
-- Health insurance coverage
-- Pension contribution as per Nigerian law
-
-CONFIDENTIALITY:
-Employee agrees to maintain confidentiality of company information.
-
-INTELLECTUAL PROPERTY:
-All work-related IP belongs to the Company.
-
-TERMINATION:
-Either party may terminate with 1 month written notice.
-
-Governed by Nigerian Labour Act and Employment laws.`
-    },
-    {
-      id: 'nda',
-      title: 'Non-Disclosure Agreement',
-      description: 'Protect confidential information and trade secrets',
-      category: 'Contracts',
-      template: `NON-DISCLOSURE AGREEMENT
-
-This NDA is between [COMPANY_NAME] (Disclosing Party) and [RECIPIENT_NAME] (Receiving Party).
-
-CONFIDENTIAL INFORMATION:
-All non-public information shared during business discussions.
-
-OBLIGATIONS:
-1. Maintain strict confidentiality
-2. Use information only for evaluation purposes
-3. Return all materials upon request
-
-DURATION: 
-This agreement remains in effect for 2 years from signing.
-
-REMEDIES:
-Breach may result in injunctive relief and damages.
-
-GOVERNING LAW:
-This agreement is governed by Nigerian law.`
-    },
-    {
-      id: 'memart',
-      title: 'MEMART Form',
-      description: 'Memorandum and Articles of Association',
-      category: 'CAC Registration',
-      template: `MEMORANDUM OF ASSOCIATION
-OF
-[COMPANY_NAME]
-
-1. NAME OF COMPANY
-The name of the company is "[COMPANY_NAME]"
-
-2. REGISTERED OFFICE
-The registered office of the company is situated at:
-[REGISTERED_ADDRESS]
-
-3. OBJECTS
-The objects for which the company is established are:
-[BUSINESS_OBJECTS]
-
-4. LIABILITY
-The liability of the members is limited.
-
-5. SHARE CAPITAL
-The authorized share capital is ₦[SHARE_CAPITAL] divided into shares of ₦1.00 each.
-
-ARTICLES OF ASSOCIATION
-
-INTERPRETATION
-1. In these Articles, words and expressions have meanings assigned by CAMA 2020.
-
-SHARE CAPITAL
-2. Subject to provisions of the Act, shares may be issued with or without voting rights.
-
-BOARD OF DIRECTORS
-3. The number of directors shall not be less than 2.
-4. Directors shall be appointed by ordinary resolution.
-
-MEETINGS
-5. Annual General Meeting shall be held within 15 months of incorporation.`
-    }
+    { value: 'shareholders-agreement', label: 'Shareholders Agreement' },
+    { value: 'employment-contract', label: 'Employment Contract' },
+    { value: 'nda', label: 'Non-Disclosure Agreement' },
+    { value: 'memart', label: 'MEMART (Articles of Association)' },
+    { value: 'board-resolution', label: 'Board Resolution Template' }
   ];
+
+  const sectors = [
+    { value: 'fintech', label: 'FinTech' },
+    { value: 'healthtech', label: 'HealthTech' },
+    { value: 'edtech', label: 'EdTech' },
+    { value: 'ecommerce', label: 'E-commerce' },
+    { value: 'agtech', label: 'AgTech' },
+    { value: 'other', label: 'Other' }
+  ];
+
+  const fundingStages = [
+    { value: 'pre-seed', label: 'Pre-Seed' },
+    { value: 'seed', label: 'Seed' },
+    { value: 'series-a', label: 'Series A' },
+    { value: 'series-b', label: 'Series B+' }
+  ];
+
+  const formatDocumentContent = (content: string) => {
+    // Remove markdown formatting and clean up the content
+    return content
+      .replace(/\*\*/g, '') // Remove bold markdown
+      .replace(/\*/g, '') // Remove italic markdown
+      .replace(/#{1,6}\s*/g, '') // Remove heading markers
+      .replace(/^\s*-\s*/gm, '• ') // Convert markdown lists to bullet points
+      .replace(/^\s*\d+\.\s*/gm, (match, offset, string) => {
+        // Keep numbered lists but clean them up
+        const lineStart = string.lastIndexOf('\n', offset) + 1;
+        const lineContent = string.substring(lineStart, offset);
+        return lineContent.trim() === '' ? match : match;
+      })
+      .trim();
+  };
 
   const handleGenerate = async () => {
     if (!selectedDocType || !formData.companyName) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+      toast.error('Please fill in required fields');
       return;
     }
 
     setIsGenerating(true);
-    
     try {
-      const selectedDoc = documentTypes.find(doc => doc.id === selectedDocType);
-      if (!selectedDoc) throw new Error('Document template not found');
-
-      // Generate document using the template and form data
-      let document = selectedDoc.template;
-      
-      // Replace placeholders with form data
-      document = document.replace(/\[COMPANY_NAME\]/g, formData.companyName);
-      document = document.replace(/\[SHARE_CAPITAL\]/g, formData.shareCapital || '1,000,000');
-      document = document.replace(/\[REGISTERED_ADDRESS\]/g, formData.registeredAddress || 'To be provided');
-      document = document.replace(/\[BUSINESS_OBJECTS\]/g, formData.businessObjects || 'General commercial activities as permitted by law');
-      document = document.replace(/\[FOUNDERS_LIST\]/g, formData.founders || 'Founder names to be inserted');
-      document = document.replace(/\[BUSINESS_TYPE\]/g, formData.businessType || 'Technology');
-      document = document.replace(/\[DATE\]/g, new Date().toLocaleDateString());
-      document = document.replace(/\[BOARD_SIZE\]/g, formData.founders ? formData.founders.split(',').length.toString() : '2');
-      document = document.replace(/\[QUORUM\]/g, '2');
-
-      // Use AI to enhance the document
-      const { data, error } = await supabase.functions.invoke('chat-ai', {
-        body: { 
-          message: `Please review and enhance this ${selectedDoc.title} for a Nigerian startup. Make it more comprehensive and legally compliant with CAMA 2020:\n\n${document}`,
-          context: `Company: ${formData.companyName}, Business: ${formData.businessType}, Founders: ${formData.founders}`
-        }
+      const response = await fetch('/api/chat-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Generate a ${documentTypes.find(t => t.value === selectedDocType)?.label} for a Nigerian startup with the following details:
+          Company Name: ${formData.companyName}
+          Number of Founders: ${formData.founders}
+          Business Sector: ${formData.sector}
+          Funding Stage: ${formData.fundingStage}
+          Additional Information: ${formData.additionalInfo}
+          
+          Please provide a comprehensive, CAC-compliant document that includes all necessary clauses and terms specific to Nigerian corporate law. Format it as a clean, professional legal document without markdown formatting.`,
+          isDocumentGeneration: true
+        }),
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error('Failed to generate document');
+      }
 
-      setGeneratedDocument(data.response);
-      setShowPreview(true);
-      
-      toast({
-        title: "Document Generated",
-        description: `${selectedDoc.title} has been generated successfully`,
-      });
+      const data = await response.json();
+      const cleanedContent = formatDocumentContent(data.response);
+      setGeneratedDocument(cleanedContent);
+      toast.success('Document generated successfully!');
     } catch (error) {
-      console.error('Document generation error:', error);
-      toast({
-        title: "Generation Failed",
-        description: "Failed to generate document. Please try again.",
-        variant: "destructive",
-      });
+      console.error('Error generating document:', error);
+      toast.error('Failed to generate document. Please try again.');
     } finally {
       setIsGenerating(false);
     }
   };
 
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(generatedDocument);
+    toast.success('Document copied to clipboard!');
+  };
+
   const handleDownload = () => {
-    const blob = new Blob([generatedDocument], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${selectedDocType}-${formData.companyName || 'document'}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const element = document.createElement('a');
+    const file = new Blob([generatedDocument], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${formData.companyName}-${selectedDocType}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast.success('Document downloaded!');
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <div className="border-b p-6">
-        <h1 className="text-2xl font-bold text-foreground">Document Generator</h1>
-        <p className="text-muted-foreground">Generate CAC-compliant legal documents for your startup</p>
+    <div className="flex-1 flex flex-col h-full">
+      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6">
+        <div className="flex items-center space-x-3">
+          <FileText className="h-6 w-6 text-primary" />
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Document Generator</h1>
+            <p className="text-sm text-muted-foreground">Generate CAC-compliant legal documents for your startup</p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {!showPreview ? (
-            <>
+      <div className="flex-1 overflow-auto p-6">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Form Section */}
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileText className="h-5 w-5 mr-2 text-primary" />
+                Document Details
+              </CardTitle>
+              <CardDescription>
+                Fill in your startup information to generate customized legal documents
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-4">
               {/* Document Type Selection */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select Document Type</CardTitle>
-                  <CardDescription>Choose the legal document you need to generate</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {documentTypes.map((doc) => (
-                      <Card 
-                        key={doc.id}
-                        className={`cursor-pointer transition-all hover:shadow-md ${
-                          selectedDocType === doc.id ? 'ring-2 ring-primary bg-primary/5' : ''
-                        }`}
-                        onClick={() => setSelectedDocType(doc.id)}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-start space-x-3">
-                            <FileText className="w-6 h-6 text-primary mt-1" />
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-sm">{doc.title}</h3>
-                              <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
-                              <Badge variant="secondary" className="mt-2 text-xs">{doc.category}</Badge>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+              <div className="space-y-2">
+                <Label htmlFor="doc-type">Document Type *</Label>
+                <Select value={selectedDocType} onValueChange={setSelectedDocType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select document type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {documentTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
+                  </SelectContent>
+                </Select>
+              </div>
 
-              {/* Document Configuration Form */}
-              {selectedDocType && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Document Details</CardTitle>
-                    <CardDescription>Provide information to customize your document</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="companyName">Company Name *</Label>
-                        <Input
-                          id="companyName"
-                          placeholder="Enter your company name"
-                          value={formData.companyName}
-                          onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="businessType">Business Type</Label>
-                        <Select value={formData.businessType} onValueChange={(value) => setFormData({...formData, businessType: value})}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select business type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="fintech">FinTech</SelectItem>
-                            <SelectItem value="ecommerce">E-commerce</SelectItem>
-                            <SelectItem value="saas">SaaS</SelectItem>
-                            <SelectItem value="healthtech">HealthTech</SelectItem>
-                            <SelectItem value="edtech">EdTech</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+              {/* Company Information */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company-name">Company Name *</Label>
+                  <Input
+                    id="company-name"
+                    value={formData.companyName}
+                    onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+                    placeholder="e.g., TechNova Limited"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="founders">Number of Founders</Label>
+                  <Input
+                    id="founders"
+                    type="number"
+                    value={formData.founders}
+                    onChange={(e) => setFormData(prev => ({ ...prev, founders: e.target.value }))}
+                    placeholder="e.g., 3"
+                  />
+                </div>
+              </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="founders">Founders (comma-separated)</Label>
-                        <Input
-                          id="founders"
-                          placeholder="John Doe, Jane Smith"
-                          value={formData.founders}
-                          onChange={(e) => setFormData({...formData, founders: e.target.value})}
-                        />
-                      </div>
+              {/* Business Details */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sector">Business Sector</Label>
+                  <Select value={formData.sector} onValueChange={(value) => setFormData(prev => ({ ...prev, sector: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select sector" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sectors.map((sector) => (
+                        <SelectItem key={sector.value} value={sector.value}>
+                          {sector.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="funding-stage">Funding Stage</Label>
+                  <Select value={formData.fundingStage} onValueChange={(value) => setFormData(prev => ({ ...prev, fundingStage: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select stage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fundingStages.map((stage) => (
+                        <SelectItem key={stage.value} value={stage.value}>
+                          {stage.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="shareCapital">Share Capital (₦)</Label>
-                        <Input
-                          id="shareCapital"
-                          placeholder="1,000,000"
-                          value={formData.shareCapital}
-                          onChange={(e) => setFormData({...formData, shareCapital: e.target.value})}
-                        />
-                      </div>
-                    </div>
+              {/* Additional Information */}
+              <div className="space-y-2">
+                <Label htmlFor="additional-info">Additional Information</Label>
+                <Textarea
+                  id="additional-info"
+                  value={formData.additionalInfo}
+                  onChange={(e) => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))}
+                  placeholder="Any specific clauses or requirements..."
+                  className="min-h-[80px]"
+                />
+              </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="registeredAddress">Registered Address</Label>
-                      <Input
-                        id="registeredAddress"
-                        placeholder="Company registered office address"
-                        value={formData.registeredAddress}
-                        onChange={(e) => setFormData({...formData, registeredAddress: e.target.value})}
-                      />
-                    </div>
+              {/* Generate Button */}
+              <Button 
+                onClick={handleGenerate}
+                className="w-full bg-primary hover:bg-primary/90"
+                disabled={!selectedDocType || !formData.companyName || isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Generating...
+                  </>
+                ) : (
+                  'Generate Document'
+                )}
+              </Button>
+            </CardContent>
+          </Card>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="businessObjects">Business Objects</Label>
-                      <Textarea
-                        id="businessObjects"
-                        placeholder="Describe the main business activities and objects of the company"
-                        value={formData.businessObjects}
-                        onChange={(e) => setFormData({...formData, businessObjects: e.target.value})}
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="flex justify-end space-x-4 pt-4">
-                      <Button 
-                        onClick={handleGenerate} 
-                        disabled={isGenerating || !formData.companyName}
-                        className="bg-primary hover:bg-primary/90"
-                      >
-                        {isGenerating ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Generating...
-                          </>
-                        ) : (
-                          <>
-                            <FileText className="w-4 h-4 mr-2" />
-                            Generate Document
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </>
-          ) : (
-            /* Document Preview */
-            <Card>
+          {/* Generated Document Section */}
+          {generatedDocument && (
+            <Card className="h-fit">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Generated Document Preview</CardTitle>
-                    <CardDescription>Review your generated document below</CardDescription>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                    Generated Document
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" onClick={() => setShowPreview(false)}>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Edit
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopyToClipboard}
+                    >
+                      <Copy className="h-4 w-4 mr-1" />
+                      Copy
                     </Button>
-                    <Button onClick={handleDownload}>
-                      <Download className="w-4 h-4 mr-2" />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownload}
+                    >
+                      <Download className="h-4 w-4 mr-1" />
                       Download
                     </Button>
                   </div>
-                </div>
+                </CardTitle>
               </CardHeader>
+              
               <CardContent>
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <pre className="whitespace-pre-wrap text-sm font-mono">{generatedDocument}</pre>
+                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-auto">
+                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono">
+                    {generatedDocument}
+                  </pre>
                 </div>
               </CardContent>
             </Card>
