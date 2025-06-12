@@ -3,8 +3,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { ChatSuggestions } from './ChatSuggestions';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '../ui/use-toast';
 
 interface Message {
   id: string;
@@ -17,15 +19,23 @@ export const ChatInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userContext, setUserContext] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Load user context from onboarding data
+    const userData = localStorage.getItem('startupgpt_user_data');
+    if (userData) {
+      const parsed = JSON.parse(userData);
+      setUserContext(`User type: ${parsed.userType}, Stage: ${parsed.stage}, Priorities: ${parsed.priorities.join(', ')}`);
+    }
+    scrollToBottom();
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSendMessage = async (message?: string) => {
     const messageText = message || input.trim();
@@ -42,18 +52,43 @@ export const ChatInterface: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual Groq API call)
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: { 
+          message: messageText,
+          context: userContext
+        }
+      });
+
+      if (error) throw error;
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `I understand you're asking about "${messageText}". As your AI legal partner for Nigerian startups, I can help you with CAC registration, legal documents, compliance, and more. Let me provide you with specific guidance based on Nigerian law.`,
+        content: data.response,
         role: 'assistant',
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get AI response. Please try again.",
+        variant: "destructive",
+      });
+      
+      // Fallback response
+      const fallbackMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "I apologize, but I'm having trouble connecting right now. Please try asking your question again, or check out our knowledge base for helpful information about Nigerian startup law.",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, fallbackMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -79,6 +114,11 @@ export const ChatInterface: React.FC = () => {
               <Bot className="w-16 h-16 text-primary mx-auto mb-4" />
               <h2 className="text-xl font-semibold mb-2">Welcome to StartupGPT</h2>
               <p className="text-muted-foreground">Your AI legal partner for Nigerian startup success</p>
+              {userContext && (
+                <p className="text-sm text-primary mt-2 bg-primary/10 px-3 py-1 rounded-full inline-block">
+                  Profile: {userContext.split(',')[0]} • {userContext.split(',')[1]}
+                </p>
+              )}
             </div>
             <ChatSuggestions onSuggestionClick={handleSendMessage} />
           </div>
@@ -96,7 +136,11 @@ export const ChatInterface: React.FC = () => {
                   )}
                 </div>
                 <Card className="flex-1 p-4">
-                  <p className="text-foreground whitespace-pre-wrap">{message.content}</p>
+                  <div className="prose prose-sm max-w-none">
+                    <div dangerouslySetInnerHTML={{ 
+                      __html: message.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+                    }} />
+                  </div>
                   <p className="text-xs text-muted-foreground mt-2">
                     {message.timestamp.toLocaleTimeString()}
                   </p>
@@ -110,10 +154,9 @@ export const ChatInterface: React.FC = () => {
                   <Bot className="w-5 h-5 text-white" />
                 </div>
                 <Card className="flex-1 p-4">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full typing-animation"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full typing-animation" style={{animationDelay: '0.2s'}}></div>
-                    <div className="w-2 h-2 bg-primary rounded-full typing-animation" style={{animationDelay: '0.4s'}}></div>
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">Thinking...</span>
                   </div>
                 </Card>
               </div>
