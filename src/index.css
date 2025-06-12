@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* StartupGPT Design System */
+/* StartupGPT Enterprise Design System */
 
 @layer base {
   :root {
@@ -37,14 +37,14 @@
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 210 17% 20%;
+    --sidebar-primary: 199 86% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 96%;
+    --sidebar-accent-foreground: 210 17% 20%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 199 86% 53%;
   }
 
   .dark {
@@ -76,14 +76,14 @@
     --input: 210 17% 20%;
     --ring: 199 86% 53%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 210 17% 12%;
+    --sidebar-foreground: 210 17% 98%;
+    --sidebar-primary: 199 86% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 210 17% 20%;
+    --sidebar-accent-foreground: 210 17% 98%;
+    --sidebar-border: 210 17% 20%;
+    --sidebar-ring: 199 86% 53%;
   }
 }
 
@@ -93,36 +93,26 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-clash;
   }
 }
 
-/* Nigerian Pattern Background */
-.nigerian-pattern {
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(24, 165, 243, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(13, 59, 102, 0.1) 0%, transparent 50%);
+/* Enterprise animations */
+.typing-animation {
+  animation: typing 2s infinite;
 }
 
-/* Animation for floating chat widget */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.float-animation {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Typing indicator animation */
 @keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-10px); }
+  0%, 20% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
-.typing-dot {
-  animation: typing 1.4s infinite;
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
