@@ -1,12 +1,25 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import { HeroSection } from '../components/HeroSection';
+import { FeaturesShowcase } from '../components/FeaturesShowcase';
+import { LegalKnowledgeBase } from '../components/LegalKnowledgeBase';
+import { DocumentGenerator } from '../components/DocumentGenerator';
+import { RegistrationAssistant } from '../components/RegistrationAssistant';
+import { Footer } from '../components/Footer';
+import { ChatWidget } from '../components/ChatWidget';
 
 const Index = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <HeroSection onOpenChat={() => setIsChatOpen(true)} />
+      <FeaturesShowcase />
+      <LegalKnowledgeBase />
+      <DocumentGenerator />
+      <RegistrationAssistant />
+      <Footer />
+      <ChatWidget isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 };
