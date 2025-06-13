@@ -8,6 +8,7 @@ import { Textarea } from '../ui/textarea';
 import { SidebarTrigger } from '../ui/sidebar';
 import { Download, Copy, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export const DocumentGeneratorTab: React.FC = () => {
   const [selectedDocType, setSelectedDocType] = useState('');
@@ -39,10 +40,10 @@ export const DocumentGeneratorTab: React.FC = () => {
   ];
 
   const fundingStages = [
-    { value: 'pre-seed', label: 'Pre-Seed' },
-    { value: 'seed', label: 'Seed' },
-    { value: 'series-a', label: 'Series A' },
-    { value: 'series-b', label: 'Series B+' }
+    { value: 'pre-seed', label: 'Pre-Seed (idea stage, personal savings/friends & family)' },
+    { value: 'seed', label: 'Seed (early product, angel investors/seed funds)' },
+    { value: 'series-a', label: 'Series A (proven traction, institutional VCs)' },
+    { value: 'series-b', label: 'Series B+ (scaling business, growth capital)' }
   ];
 
   const formatDocumentContent = (content: string) => {
@@ -69,12 +70,8 @@ export const DocumentGeneratorTab: React.FC = () => {
 
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/chat-ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: {
           message: `Generate a ${documentTypes.find(t => t.value === selectedDocType)?.label} for a Nigerian startup with the following details:
           Company Name: ${formData.companyName}
           Number of Founders: ${formData.founders}
@@ -84,14 +81,12 @@ export const DocumentGeneratorTab: React.FC = () => {
           
           Please provide a comprehensive, CAC-compliant document that includes all necessary clauses and terms specific to Nigerian corporate law. Format it as a clean, professional legal document without markdown formatting.`,
           isDocumentGeneration: true
-        }),
+        }
       });
 
-      if (!response.ok) {
+      if (error) {
         throw new Error('Failed to generate document');
       }
-
-      const data = await response.json();
       const cleanedContent = formatDocumentContent(data.response);
       setGeneratedDocument(cleanedContent);
       toast.success('Document generated successfully!');

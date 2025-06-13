@@ -107,8 +107,8 @@ Navigating Nigeria's complex legal landscape for startups is challenging and exp
 
 4. **Start development server**
    ```bash
-npm run dev
-```
+   npm run dev
+   ```
 
 5. **Open in browser**
    ```

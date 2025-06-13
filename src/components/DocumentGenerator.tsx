@@ -34,10 +34,10 @@ export const DocumentGenerator: React.FC = () => {
   ];
 
   const fundingStages = [
-    { value: 'pre-seed', label: 'Pre-Seed' },
-    { value: 'seed', label: 'Seed' },
-    { value: 'series-a', label: 'Series A' },
-    { value: 'series-b', label: 'Series B+' }
+    { value: 'pre-seed', label: 'Pre-Seed (idea stage, personal savings/friends & family)' },
+    { value: 'seed', label: 'Seed (early product, angel investors/seed funds)' },
+    { value: 'series-a', label: 'Series A (proven traction, institutional VCs)' },
+    { value: 'series-b', label: 'Series B+ (scaling business, growth capital)' }
   ];
 
   const handleGenerate = () => {
