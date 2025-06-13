@@ -5,7 +5,8 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { FileText, Download, Copy, CheckCircle } from 'lucide-react';
+import { SidebarTrigger } from '../ui/sidebar';
+import { Download, Copy, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const DocumentGeneratorTab: React.FC = () => {
@@ -120,36 +121,35 @@ export const DocumentGeneratorTab: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6">
+      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3 sm:p-4 lg:p-6">
         <div className="flex items-center space-x-3">
-          <FileText className="h-6 w-6 text-primary" />
+          <SidebarTrigger className="h-7 w-7 flex-shrink-0" />
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Document Generator</h1>
-            <p className="text-sm text-muted-foreground">Generate CAC-compliant legal documents for your startup</p>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Document Generator</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Generate CAC-compliant legal documents for your startup</p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
-        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {/* Form Section */}
           <Card className="h-fit">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="h-5 w-5 mr-2 text-primary" />
+            <CardHeader className="p-3 sm:p-4 lg:p-6">
+              <CardTitle className="text-base sm:text-lg">
                 Document Details
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Fill in your startup information to generate customized legal documents
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="space-y-4">
+            <CardContent className="p-3 sm:p-4 lg:p-6 pt-0 space-y-3 sm:space-y-4">
               {/* Document Type Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="doc-type">Document Type *</Label>
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="doc-type" className="text-xs sm:text-sm">Document Type *</Label>
                 <Select value={selectedDocType} onValueChange={setSelectedDocType}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9 sm:h-10">
                     <SelectValue placeholder="Select document type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,35 +163,37 @@ export const DocumentGeneratorTab: React.FC = () => {
               </div>
 
               {/* Company Information */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="company-name">Company Name *</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="company-name" className="text-xs sm:text-sm">Company Name *</Label>
                   <Input
                     id="company-name"
                     value={formData.companyName}
                     onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
                     placeholder="e.g., TechNova Limited"
+                    className="h-9 sm:h-10 text-sm"
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="founders">Number of Founders</Label>
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="founders" className="text-xs sm:text-sm">Number of Founders</Label>
                   <Input
                     id="founders"
                     type="number"
                     value={formData.founders}
                     onChange={(e) => setFormData(prev => ({ ...prev, founders: e.target.value }))}
                     placeholder="e.g., 3"
+                    className="h-9 sm:h-10 text-sm"
                   />
                 </div>
               </div>
 
               {/* Business Details */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sector">Business Sector</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="sector" className="text-xs sm:text-sm">Business Sector</Label>
                   <Select value={formData.sector} onValueChange={(value) => setFormData(prev => ({ ...prev, sector: value }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-9 sm:h-10">
                       <SelectValue placeholder="Select sector" />
                     </SelectTrigger>
                     <SelectContent>
@@ -204,10 +206,10 @@ export const DocumentGeneratorTab: React.FC = () => {
                   </Select>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="funding-stage">Funding Stage</Label>
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="funding-stage" className="text-xs sm:text-sm">Funding Stage</Label>
                   <Select value={formData.fundingStage} onValueChange={(value) => setFormData(prev => ({ ...prev, fundingStage: value }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-9 sm:h-10">
                       <SelectValue placeholder="Select stage" />
                     </SelectTrigger>
                     <SelectContent>
@@ -222,26 +224,26 @@ export const DocumentGeneratorTab: React.FC = () => {
               </div>
 
               {/* Additional Information */}
-              <div className="space-y-2">
-                <Label htmlFor="additional-info">Additional Information</Label>
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="additional-info" className="text-xs sm:text-sm">Additional Information</Label>
                 <Textarea
                   id="additional-info"
                   value={formData.additionalInfo}
                   onChange={(e) => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))}
                   placeholder="Any specific clauses or requirements..."
-                  className="min-h-[80px]"
+                  className="min-h-[60px] sm:min-h-[80px] text-sm resize-none"
                 />
               </div>
 
               {/* Generate Button */}
               <Button 
                 onClick={handleGenerate}
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-primary hover:bg-primary/90 h-9 sm:h-10 text-sm"
                 disabled={!selectedDocType || !formData.companyName || isGenerating}
               >
                 {isGenerating ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2"></div>
                     Generating...
                   </>
                 ) : (
@@ -254,36 +256,38 @@ export const DocumentGeneratorTab: React.FC = () => {
           {/* Generated Document Section */}
           {generatedDocument && (
             <Card className="h-fit">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+              <CardHeader className="p-3 sm:p-4 lg:p-6">
+                <CardTitle className="flex items-center justify-between text-base sm:text-lg">
                   <div className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-600" />
                     Generated Document
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-1 sm:space-x-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleCopyToClipboard}
+                      className="h-8 sm:h-9 px-2 sm:px-3"
                     >
-                      <Copy className="h-4 w-4 mr-1" />
-                      Copy
+                      <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                      <span className="hidden sm:inline">Copy</span>
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleDownload}
+                      className="h-8 sm:h-9 px-2 sm:px-3"
                     >
-                      <Download className="h-4 w-4 mr-1" />
-                      Download
+                      <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                      <span className="hidden sm:inline">Download</span>
                     </Button>
                   </div>
                 </CardTitle>
               </CardHeader>
               
-              <CardContent>
-                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-auto">
-                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono">
+              <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
+                <div className="bg-muted rounded-lg p-2 sm:p-3 lg:p-4 max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] overflow-auto">
+                  <pre className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed font-mono">
                     {generatedDocument}
                   </pre>
                 </div>

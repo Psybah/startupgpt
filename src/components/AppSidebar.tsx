@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from './ui/sidebar';
 import { MessageSquare, FileText, BookOpen, Settings, LogOut } from 'lucide-react';
@@ -52,33 +51,33 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   };
 
   return (
-    <Sidebar className="border-r bg-sidebar">
-      <SidebarHeader className="border-b p-6">
-        <div className="flex items-center space-x-3">
+    <Sidebar className="border-r bg-white shadow-sm" collapsible="icon">
+      <SidebarHeader className="border-b border-gray-100 p-4 lg:p-6">
+        <div className="flex items-center">
           <img 
             src="/lovable-uploads/81864f48-4da2-4487-86ea-0757c50afeee.png" 
             alt="StartupGPT" 
-            className="h-8 w-8" 
+            className="h-8 flex-shrink-0" 
           />
-          {/* No text beside logo on any screen size */}
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="p-2">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-2">
               {menuItems.map(item => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
                     onClick={() => onTabChange(item.id)} 
                     isActive={activeTab === item.id} 
-                    className="w-full justify-start p-4 hover:bg-sidebar-accent transition-colors duration-200 group-data-[collapsible=icon]:justify-center"
+                    className="w-full justify-start p-4 rounded-lg hover:bg-gray-50 transition-all duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3"
+                    tooltip={item.title}
                   >
-                    <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <div className="flex-1 text-left ml-3 group-data-[collapsible=icon]:hidden">
-                      <div className="font-medium text-sm">{item.title}</div>
-                      <div className="text-xs text-sidebar-foreground/60 mt-0.5">{item.description}</div>
+                    <item.icon className="h-5 w-5 flex-shrink-0 text-gray-600" />
+                    <div className="flex-1 text-left ml-4 group-data-[collapsible=icon]:hidden">
+                      <div className="font-medium text-sm text-gray-900">{item.title}</div>
+                      {/* <div className="text-xs text-gray-500 mt-1">{item.description}</div> */}
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -88,33 +87,37 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="border-t border-gray-100 p-4">
         <SidebarMenu className="space-y-2">
           <SidebarMenuItem>
-            <SidebarMenuButton className="w-full justify-start p-3 hover:bg-sidebar-accent transition-colors duration-200 group-data-[collapsible=icon]:justify-center">
-              <Settings className="h-4 w-4 flex-shrink-0" />
-              <span className="ml-3 group-data-[collapsible=icon]:hidden">Settings</span>
+            <SidebarMenuButton 
+              className="w-full justify-start p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3"
+              tooltip="Settings"
+            >
+              <Settings className="h-4 w-4 flex-shrink-0 text-gray-600" />
+              <span className="ml-3 text-sm text-gray-900 group-data-[collapsible=icon]:hidden">Settings</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={handleLogout}
-              className="w-full justify-start p-3 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 group-data-[collapsible=icon]:justify-center"
+              className="w-full justify-start p-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3"
+              tooltip="Logout"
             >
               <LogOut className="h-4 w-4 flex-shrink-0" />
-              <span className="ml-3 group-data-[collapsible=icon]:hidden">Logout</span>
+              <span className="ml-3 text-sm group-data-[collapsible=icon]:hidden">Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
         
-        <div className="mt-4 p-3 bg-sidebar-accent rounded-lg group-data-[collapsible=icon]:hidden">
-          <p className="text-xs text-sidebar-foreground/60">
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg group-data-[collapsible=icon]:hidden">
+          <p className="text-xs text-amber-700 leading-relaxed">
             ⚠️ AI guidance only - consult human lawyer for complex matters
           </p>
         </div>
       </SidebarFooter>
       
-      {/* Add SidebarRail for collapse functionality */}
+      {/* SidebarRail for collapse functionality */}
       <SidebarRail />
     </Sidebar>
   );

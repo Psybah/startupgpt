@@ -1,73 +1,262 @@
-# Welcome to your Lovable project
+# StartupGPT - AI Legal Partner for Nigerian Startups
 
-## Project info
+<div align="center">
+  <img src="public/lovable-uploads/81864f48-4da2-4487-86ea-0757c50afeee.png" alt="StartupGPT Logo" height="80">
+  
+  **Your AI Legal Companion for Nigerian Startup Success**
+  
+  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)](https://supabase.com/)
+  
+  [Live Demo](https://startupgpt.vercel.app/) • [Documentation](#documentation) • [Contributing](#contributing)
+</div>
 
-**URL**: https://lovable.dev/projects/6c799d2e-1ce3-47f9-a250-76dc3068f655
+## 🚀 Overview
 
-## How can I edit this code?
+StartupGPT is an AI-powered legal assistant specifically designed for Nigerian entrepreneurs and startups. It provides comprehensive guidance on company registration, legal document generation, regulatory compliance, and startup-specific legal requirements within the Nigerian business environment.
 
-There are several ways of editing your application.
+### 🎯 Key Problem Solved
 
-**Use Lovable**
+Navigating Nigeria's complex legal landscape for startups is challenging and expensive. StartupGPT democratizes access to legal knowledge by providing:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6c799d2e-1ce3-47f9-a250-76dc3068f655) and start prompting.
+- **Instant CAC registration guidance** with current costs and procedures
+- **AI-generated legal documents** compliant with Nigerian law (CAMA 2020)
+- **Sector-specific compliance** advice (FinTech, HealthTech, EdTech)
+- **Cost-effective legal assistance** accessible 24/7
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Features
 
-**Use your preferred IDE**
+### 🤖 AI Legal Assistant
+- **Smart Chat Interface** with context-aware responses
+- **Nigerian Law Specialization** (CAMA 2020, SEC, CBN regulations)
+- **Personalized Guidance** based on user profile and startup stage
+- **Cost Estimates** in Nigerian Naira (₦) with accurate timeframes
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📄 Document Generation
+- **Shareholder Agreements** with equity structuring
+- **Employment Contracts** and NDAs
+- **MEMART** (Memorandum and Articles of Association)
+- **Board Resolutions** and corporate templates
+- **One-click download** in multiple formats
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 📚 Legal Knowledge Base
+- **Comprehensive Guides** on CAC registration process
+- **ESOP Implementation** strategies for Nigerian startups
+- **FinTech Regulatory** landscape and licensing requirements
+- **Compliance Tracking** with deadline management
+- **Search & Filter** functionality across legal content
 
-Follow these steps:
+### 🎨 User Experience
+- **Onboarding Flow** for personalized experience
+- **Mobile-Responsive** design for accessibility
+- **Professional UI** with enterprise-grade design
+- **Real-time Updates** on legal requirements
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Technology Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and building
+- **Tailwind CSS** for utility-first styling
+- **shadcn/ui + Radix UI** for accessible components
+- **React Router** for client-side routing
+- **React Query** for server state management
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Backend & AI
+- **Supabase Edge Functions** (Deno runtime)
+- **Groq API** with Llama3-8b-8192 model
+- **PostgreSQL** database via Supabase
+- **Real-time subscriptions** for instant updates
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Design & Fonts
+- **Clash Display** typography for modern appeal
+- **Lucide React** icons for consistency
+- **Custom animations** and micro-interactions
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Node.js** 18+ and npm (or use [nvm](https://github.com/nvm-sh/nvm))
+- **Git** for version control
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/psybah/startupgpt.git
+   cd startupgpt
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   # Copy environment template
+   cp .env.example .env.local
+   
+   # Add your environment variables
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   GROQ_API=your_groq_api_key
+   ```
+
+4. **Start development server**
+   ```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+5. **Open in browser**
+   ```
+   http://localhost:8080
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+```bash
+# Build the project
+npm run build
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Preview production build
+npm run preview
+```
 
-## What technologies are used for this project?
+## 📁 Project Structure
 
-This project is built with:
+```
+startupgpt/
+├── src/
+│   ├── components/           # Reusable UI components
+│   │   ├── chat/            # Chat interface components
+│   │   ├── onboarding/      # User onboarding flow
+│   │   ├── tabs/            # Main application tabs
+│   │   └── ui/              # Base UI components (shadcn/ui)
+│   ├── hooks/               # Custom React hooks
+│   ├── integrations/        # External service integrations
+│   │   └── supabase/        # Supabase client and types
+│   ├── lib/                 # Utility functions
+│   ├── pages/               # Page components
+│   ├── utils/               # Helper functions and data
+│   └── index.css           # Global styles and Tailwind config
+├── supabase/               # Supabase configuration
+│   └── functions/          # Edge functions
+│       └── chat-ai/        # AI chat backend
+├── public/                 # Static assets
+└── package.json           # Dependencies and scripts
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🎯 Usage Guide
 
-## How can I deploy this project?
+### For Startup Founders
 
-Simply open [Lovable](https://lovable.dev/projects/6c799d2e-1ce3-47f9-a250-76dc3068f655) and click on Share -> Publish.
+1. **Complete Onboarding**: Select your founder type, startup stage, and priorities
+2. **Ask Legal Questions**: Use the chat interface for instant legal guidance
+3. **Generate Documents**: Create CAC-compliant legal documents
+4. **Browse Knowledge Base**: Access comprehensive legal guides
+5. **Track Compliance**: Monitor deadlines and requirements
 
-## Can I connect a custom domain to my Lovable project?
+### For Legal Professionals
 
-Yes, you can!
+1. **Access Advanced Features**: Utilize professional-grade document templates
+2. **Client Consultation**: Use as a research and reference tool
+3. **Stay Updated**: Access latest regulatory changes and requirements
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### For Investors
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. **Due Diligence**: Review legal structure requirements
+2. **Investment Documentation**: Generate investment-related legal documents
+3. **Compliance Verification**: Understand regulatory requirements
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `GROQ_API` | Groq API key for AI features | Yes |
+
+### Customization
+
+- **Styling**: Modify `src/index.css` for design system changes
+- **AI Prompts**: Update system prompts in `supabase/functions/chat-ai/index.ts`
+- **Legal Content**: Extend knowledge base in `src/utils/legalKnowledgeBase.ts`
+
+## 🧪 Testing
+
+```bash
+# Run linting
+npm run lint
+
+# Type checking
+npx tsc --noEmit
+
+# Build test
+npm run build
+```
+
+## 🤝 Contributing
+
+We welcome contributions to improve StartupGPT! Please follow these guidelines:
+
+### Development Workflow
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** changes: `git commit -m 'Add amazing feature'`
+4. **Push** to branch: `git push origin feature/amazing-feature`
+5. **Open** a Pull Request
+
+### Code Standards
+
+- **TypeScript**: Use proper typing for all new code
+- **ESLint**: Follow existing linting rules
+- **Components**: Use functional components with hooks
+- **Styling**: Utilize Tailwind CSS utilities
+- **Naming**: Use descriptive, consistent naming conventions
+
+### Legal Content Guidelines
+
+- **Accuracy**: Ensure all legal information is current and accurate
+- **Sources**: Cite relevant Nigerian laws and regulations
+- **Disclaimers**: Include appropriate legal disclaimers
+- **Updates**: Keep regulatory information current
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### Professional Legal Disclaimer
+
+⚠️ **Important**: StartupGPT provides AI-generated guidance for informational purposes only. For complex legal matters, always consult with qualified Nigerian legal professionals. This tool does not replace professional legal advice.
+
+## 🏆 Acknowledgments
+
+- **shadcn/ui** for the excellent component library
+- **Tailwind CSS** for the utility-first CSS framework
+- **Supabase** for backend infrastructure
+- **Groq** for AI model access
+- **Nigerian Legal Community** for domain expertise validation
+
+## 📈 Roadmap
+
+- [ ] **User Authentication** and document history
+- [ ] **Payment Integration** for premium features
+- [ ] **Real-time Notifications** for regulatory updates
+- [ ] **Multi-language Support** (Yoruba, Igbo, Hausa)
+- [ ] **Lawyer Network Integration**
+- [ ] **Mobile App** development
+- [ ] **API Access** for third-party integrations
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ for the Nigerian startup ecosystem</strong>
+  
+  [Website](https://startupgpt.vercel.app/) • [Twitter](https://x.com/_cybersmith) • [LinkedIn](https://www.linkedin.com/in/oluwamurewa/)
+</div>

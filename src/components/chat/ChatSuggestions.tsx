@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 
@@ -91,18 +90,18 @@ export const ChatSuggestions: React.FC<ChatSuggestionsProps> = ({ onSuggestionCl
       }
     }
 
-    setPersonalizedSuggestions(suggestions.slice(0, 8)); // Limit to 8 suggestions
+    setPersonalizedSuggestions(suggestions.slice(0, 6)); // Limit to 6 suggestions
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h3 className="text-lg font-semibold text-center mb-4">Personalized Questions for You</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {personalizedSuggestions.map((suggestion, index) => (
+    <div className="max-w-2xl mx-auto px-2 sm:px-4">
+      <h3 className="text-sm sm:text-base font-semibold text-center mb-2 sm:mb-3">Personalized Questions for You</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {personalizedSuggestions.slice(0, 6).map((suggestion, index) => (
           <Button
             key={index}
             variant="outline"
-            className="h-auto p-4 text-left whitespace-normal text-sm"
+            className="h-auto p-2 sm:p-3 text-left whitespace-normal text-xs leading-snug hover:bg-gray-50 transition-colors border-gray-200"
             onClick={() => onSuggestionClick(suggestion)}
           >
             {suggestion}

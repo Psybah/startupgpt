@@ -1,11 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
+import { SidebarTrigger } from '../ui/sidebar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Search, Clock, BookOpen, ExternalLink } from 'lucide-react';
 import { NigerianLegalKB } from '../../utils/legalKnowledgeBase';
+import { DetailedLegalArticle } from '../DetailedLegalArticle';
 
 export const KnowledgeBaseTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,50 +50,28 @@ export const KnowledgeBaseTab: React.FC = () => {
 
   if (selectedArticle) {
     return (
-      <div className="flex flex-col h-screen bg-background">
-        <div className="border-b p-6">
-          <Button variant="outline" onClick={handleBackToList} className="mb-4">
-            ← Back to Knowledge Base
-          </Button>
-          <h1 className="text-2xl font-bold text-foreground">{selectedArticle.title}</h1>
-          <div className="flex items-center space-x-4 mt-2">
-            <Badge variant="secondary">{selectedArticle.category}</Badge>
-            <span className="text-sm text-muted-foreground">
-              Last updated: {new Date(selectedArticle.lastUpdated).toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none">
-              <div dangerouslySetInnerHTML={{ 
-                __html: selectedArticle.content
-                  .replace(/\n/g, '<br/>')
-                  .replace(/# (.*)/g, '<h1 class="text-2xl font-bold mt-6 mb-4">$1</h1>')
-                  .replace(/## (.*)/g, '<h2 class="text-xl font-semibold mt-5 mb-3">$2</h2>')
-                  .replace(/### (.*)/g, '<h3 class="text-lg font-medium mt-4 mb-2">$3</h3>')
-                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                  .replace(/- (.*)/g, '<li class="ml-4">$1</li>')
-                  .replace(/(\d+\. .*)/g, '<li class="ml-4">$1</li>')
-              }} />
-            </div>
-          </div>
-        </div>
-      </div>
+      <DetailedLegalArticle 
+        article={selectedArticle} 
+        onBack={handleBackToList}
+      />
     );
   }
 
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <div className="border-b p-6">
-        <h1 className="text-2xl font-bold text-foreground">Legal Knowledge Base</h1>
-        <p className="text-muted-foreground">Stay updated with Nigerian startup law and regulations</p>
+      <div className="border-b p-3 sm:p-4 lg:p-6">
+        <div className="flex items-center space-x-3">
+          <SidebarTrigger className="h-7 w-7 flex-shrink-0" />
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Legal Knowledge Base</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Stay updated with Nigerian startup law and regulations</p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
+        <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -99,40 +79,40 @@ export const KnowledgeBaseTab: React.FC = () => {
               placeholder="Search articles, guides, and legal resources..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-9 sm:h-10 text-sm"
             />
           </div>
 
           {/* Featured Articles */}
           {!searchTerm && selectedCategory === 'All' && (
             <div>
-              <h2 className="text-xl font-semibold mb-4">Featured Articles</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <h2 className="text-base sm:text-lg lg:text-xl font-semibold mb-3 sm:mb-4">Featured Articles</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                 {featuredArticles.map((article) => (
                   <Card 
                     key={article.id} 
                     className="hover:shadow-lg transition-shadow cursor-pointer"
                     onClick={() => handleArticleClick(article)}
                   >
-                    <CardHeader>
+                    <CardHeader className="p-3 sm:p-4 lg:p-6">
                       <div className="flex items-center justify-between">
-                        <Badge variant="secondary">{article.category}</Badge>
+                        <Badge variant="secondary" className="text-xs">{article.category}</Badge>
                         <div className="flex items-center text-xs text-muted-foreground">
                           <Clock className="w-3 h-3 mr-1" />
                           5 min read
                         </div>
                       </div>
-                      <CardTitle className="text-lg">{article.title}</CardTitle>
-                      <CardDescription>
-                        {article.content.substring(0, 150)}...
+                      <CardTitle className="text-sm sm:text-base lg:text-lg">{article.title}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
+                        {article.content.substring(0, 100)}...
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-muted-foreground">
                           {new Date(article.lastUpdated).toLocaleDateString()}
                         </span>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" className="h-7 sm:h-8 text-xs">
                           Read More <ExternalLink className="w-3 h-3 ml-1" />
                         </Button>
                       </div>
@@ -144,35 +124,38 @@ export const KnowledgeBaseTab: React.FC = () => {
           )}
 
           {/* Categories Filter */}
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <Button 
-                key={category} 
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </Button>
-            ))}
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-foreground">Filter by category:</label>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-48 h-9">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* All Articles */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-base sm:text-lg lg:text-xl font-semibold mb-3 sm:mb-4">
               {searchTerm ? `Search Results (${filteredArticles.length})` : 'All Articles'}
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {filteredArticles.map((article) => (
                 <Card 
                   key={article.id} 
                   className="hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => handleArticleClick(article)}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <BookOpen className="w-8 h-8 text-primary mt-1" />
-                      <div className="flex-1">
+                  <CardContent className="p-3 sm:p-4 lg:p-6">
+                    <div className="flex items-start space-x-3 sm:space-x-4">
+                      <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-primary mt-1 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-2">
                           <Badge variant="secondary" className="text-xs">{article.category}</Badge>
                           <div className="flex items-center text-xs text-muted-foreground">
@@ -180,13 +163,13 @@ export const KnowledgeBaseTab: React.FC = () => {
                             5 min read
                           </div>
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
-                        <p className="text-muted-foreground mb-3">
-                          {article.content.substring(0, 200)}...
+                        <h3 className="font-semibold text-sm sm:text-base lg:text-lg mb-2 line-clamp-2">{article.title}</h3>
+                        <p className="text-muted-foreground mb-3 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
+                          {article.content.substring(0, 150)}...
                         </p>
                         <div className="flex items-center justify-between">
                           <div className="flex flex-wrap gap-1">
-                            {article.tags.slice(0, 3).map((tag: string) => (
+                            {article.tags.slice(0, 2).map((tag: string) => (
                               <Badge key={tag} variant="outline" className="text-xs">
                                 {tag}
                               </Badge>
