@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from './ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, useSidebar } from './ui/sidebar';
 import { MessageSquare, FileText, BookOpen, Settings, LogOut } from 'lucide-react';
 import { TabType } from '../pages/Index';
 import { supabase } from '../integrations/supabase/client';
@@ -14,6 +14,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   activeTab,
   onTabChange
 }) => {
+  const { isMobile, setOpenMobile } = useSidebar();
+
   const menuItems = [{
     title: "Chat Assistant",
     icon: MessageSquare,
@@ -30,6 +32,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     id: 'knowledge' as TabType,
     description: "Legal resources & guides"
   }];
+
+  const handleTabChange = (tab: TabType) => {
+    onTabChange(tab);
+    // Close mobile sidebar when a tab is selected
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -69,7 +79,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
               {menuItems.map(item => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
-                    onClick={() => onTabChange(item.id)} 
+                    onClick={() => handleTabChange(item.id)} 
                     isActive={activeTab === item.id} 
                     className="w-full justify-start p-4 rounded-lg hover:bg-gray-50 transition-all duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3"
                     tooltip={item.title}

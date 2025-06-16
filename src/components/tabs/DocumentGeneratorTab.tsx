@@ -116,7 +116,7 @@ export const DocumentGeneratorTab: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3 sm:p-4 lg:p-6">
+      <div className="fixed top-0 left-0 right-0 z-50 lg:relative lg:top-auto lg:left-auto lg:right-auto lg:z-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3 sm:p-4 lg:p-6">
         <div className="flex items-center space-x-3">
           <SidebarTrigger className="h-7 w-7 flex-shrink-0" />
           <div>
@@ -126,7 +126,7 @@ export const DocumentGeneratorTab: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6">
+      <div className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6 pt-28 sm:pt-24 lg:pt-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {/* Form Section */}
           <Card className="h-fit">
