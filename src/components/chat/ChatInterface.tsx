@@ -100,8 +100,8 @@ export const ChatInterface: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Header - Compact */}
-      <div className="border-b p-3 sm:p-4 lg:p-6">
+      {/* Header - Fixed on mobile/tablet, normal on desktop */}
+      <div className="fixed top-0 left-0 right-0 z-50 lg:relative lg:top-auto lg:left-auto lg:right-auto lg:z-auto border-b p-3 sm:p-4 lg:p-6 bg-background">
         <div className="flex items-center space-x-3">
           <SidebarTrigger className="h-7 w-7 flex-shrink-0" />
           <div>
@@ -111,8 +111,8 @@ export const ChatInterface: React.FC = () => {
         </div>
       </div>
 
-      {/* Messages Area - Responsive spacing */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6">
+      {/* Messages Area - Responsive spacing with top padding for fixed header on mobile/tablet */}
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 pt-20 sm:pt-24 lg:pt-6 space-y-3 sm:space-y-4 lg:space-y-6">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full space-y-4 sm:space-y-6 lg:space-y-8">
             <div className="text-center px-4">

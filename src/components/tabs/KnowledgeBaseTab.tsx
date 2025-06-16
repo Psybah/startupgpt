@@ -59,8 +59,8 @@ export const KnowledgeBaseTab: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <div className="border-b p-3 sm:p-4 lg:p-6">
+      {/* Header - Fixed on mobile/tablet, normal on desktop */}
+      <div className="fixed top-0 left-0 right-0 z-50 lg:relative lg:top-auto lg:left-auto lg:right-auto lg:z-auto border-b p-3 sm:p-4 lg:p-6 bg-background">
         <div className="flex items-center space-x-3">
           <SidebarTrigger className="h-7 w-7 flex-shrink-0" />
           <div>
@@ -70,7 +70,7 @@ export const KnowledgeBaseTab: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 pt-20 sm:pt-24 lg:pt-6">
         <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
           {/* Search */}
           <div className="relative">
@@ -131,11 +131,11 @@ export const KnowledgeBaseTab: React.FC = () => {
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((category) => (
+            {categories.map((category) => (
                   <SelectItem key={category} value={category}>
-                    {category}
+                {category}
                   </SelectItem>
-                ))}
+            ))}
               </SelectContent>
             </Select>
           </div>
