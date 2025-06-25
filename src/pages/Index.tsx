@@ -5,9 +5,10 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '../components/ui/
 import { ChatInterface } from '../components/chat/ChatInterface';
 import { DocumentGeneratorTab } from '../components/tabs/DocumentGeneratorTab';
 import { KnowledgeBaseTab } from '../components/tabs/KnowledgeBaseTab';
+import { CommunityInterface } from '../components/community/CommunityInterface';
 import { Menu } from 'lucide-react';
 
-export type TabType = 'chat' | 'documents' | 'knowledge';
+export type TabType = 'chat' | 'documents' | 'knowledge' | 'community';
 
 const Index = () => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
@@ -37,6 +38,8 @@ const Index = () => {
         return <DocumentGeneratorTab />;
       case 'knowledge':
         return <KnowledgeBaseTab />;
+      case 'community':
+        return <CommunityInterface />;
       default:
         return <ChatInterface />;
     }

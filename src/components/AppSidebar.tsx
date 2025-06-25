@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, useSidebar } from './ui/sidebar';
-import { MessageSquare, FileText, BookOpen, Settings, LogOut } from 'lucide-react';
+import { MessageSquare, FileText, BookOpen, Settings, LogOut, Users } from 'lucide-react';
 import { TabType } from '../pages/Index';
 import { supabase } from '../integrations/supabase/client';
 import { toast } from 'sonner';
@@ -31,6 +31,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     icon: BookOpen,
     id: 'knowledge' as TabType,
     description: "Legal resources & guides"
+  }, {
+    title: "Community",
+    icon: Users,
+    id: 'community' as TabType,
+    description: "Connect with founders & lawyers"
   }];
 
   const handleTabChange = (tab: TabType) => {
