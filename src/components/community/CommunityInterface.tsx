@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { SidebarTrigger } from '../ui/sidebar';
-import { Hash, Lock, Plus, Search, Users, Phone, Video, Settings, Pin, UserPlus, MoreVertical, MessageSquare, Send } from 'lucide-react';
+import { Hash, Lock, Plus, Search, Users, Phone, Video, Settings, Pin, UserPlus, MoreVertical, CircleUserRound, Send } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '../ui/sheet';
+import { VisuallyHidden } from '../ui/visually-hidden';
 
 interface Channel {
   id: string;
@@ -183,26 +184,6 @@ export const CommunityInterface: React.FC = () => {
           ))}
         </div>
       </ScrollArea>
-
-      {/* User Info */}
-      <div className="p-2 border-t border-gray-700">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 min-w-0">
-            <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
-              <AvatarFallback className="bg-blue-500 text-white text-xs">
-                JD
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm font-medium text-white truncate">John Doe</p>
-              <p className="text-xs text-gray-400 truncate">Founder</p>
-            </div>
-          </div>
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white h-6 w-6 p-0 flex-shrink-0">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
     </div>
   );
 
@@ -290,18 +271,21 @@ export const CommunityInterface: React.FC = () => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Channel Header */}
-        <div className="h-12 sm:h-14 bg-white border-b border-gray-200 flex items-center justify-between px-2 sm:px-4">
+        <div className="h-12 sm:h-14 bg-white border-b border-gray-200 flex items-center justify-between px-2 sm:px-4 sticky top-0 z-10">
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <SidebarTrigger className="h-6 w-6 sm:h-7 sm:w-7 flex-shrink-0" />
             
             {/* Mobile Channels Button */}
             <Sheet open={showChannels} onOpenChange={setShowChannels}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden h-8 w-8 p-0">
-                  <Hash className="h-4 w-4" />
+                <Button variant="outline" size="sm" className="lg:hidden h-8 w-8 p-0 bg-blue-50 hover:bg-blue-100 border-blue-200">
+                  <Users className="h-4 w-4 text-blue-600" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-64">
+                <VisuallyHidden>
+                  <SheetTitle>Community Channels</SheetTitle>
+                </VisuallyHidden>
                 <ChannelsList />
               </SheetContent>
             </Sheet>
@@ -329,11 +313,14 @@ export const CommunityInterface: React.FC = () => {
             {/* Mobile Members Button */}
             <Sheet open={showMembers} onOpenChange={setShowMembers}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="xl:hidden h-6 w-6 sm:h-8 sm:w-8 p-0">
-                  <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                <Button variant="outline" size="sm" className="xl:hidden h-6 w-6 sm:h-8 sm:w-8 p-0 bg-blue-50 hover:bg-blue-100 border-blue-200">
+                  <CircleUserRound className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="p-0 w-64">
+                <VisuallyHidden>
+                  <SheetTitle>Community Members</SheetTitle>
+                </VisuallyHidden>
                 <MembersList />
               </SheetContent>
             </Sheet>
@@ -345,8 +332,9 @@ export const CommunityInterface: React.FC = () => {
         </div>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 p-2 sm:p-4">
-          <div className="space-y-2 sm:space-y-4">
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full p-2 sm:p-4">
+            <div className="space-y-2 sm:space-y-4">
             {messages.map((message) => (
               <div key={message.id} className="flex space-x-2 sm:space-x-3 hover:bg-gray-50 p-1 sm:p-2 rounded-lg group">
                 <Avatar className="h-8 w-8 sm:h-10 sm:w-10 mt-1 flex-shrink-0">
@@ -369,8 +357,9 @@ export const CommunityInterface: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
-        </ScrollArea>
+            </div>
+          </ScrollArea>
+        </div>
 
         {/* Message Input */}
         <div className="p-2 sm:p-4 bg-white border-t border-gray-200">
