@@ -1,9 +1,9 @@
+/* Import Clash Display font */
+@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Clash Display font */
-@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@200;300;400;500;600;700;800;900&display=swap');
 
 /* StartupGPT Enterprise Design System */
 
@@ -138,4 +138,83 @@
   .sidebar-mobile-show {
     transform: translateX(0);
   }
+}
+
+/* Improve sheet/sidebar animations to reduce glitching */
+[data-radix-scroll-area-viewport] {
+  will-change: transform;
+}
+
+/* Optimize sheet animations - disable default and use simpler transforms */
+[data-radix-dialog-content] {
+  animation: none !important;
+}
+
+/* Custom optimized sheet animations */
+[data-state="open"][data-side="left"] {
+  animation: slideInFromLeft 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-state="closed"][data-side="left"] {
+  animation: slideOutToLeft 120ms cubic-bezier(0.4, 0, 0.8, 0);
+}
+
+[data-state="open"][data-side="right"] {
+  animation: slideInFromRight 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-state="closed"][data-side="right"] {
+  animation: slideOutToRight 120ms cubic-bezier(0.4, 0, 0.8, 0);
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0;
+  }
+}
+
+/* Prevent layout shifts during animations */
+.sheet-content {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
