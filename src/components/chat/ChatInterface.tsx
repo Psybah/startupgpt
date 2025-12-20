@@ -145,7 +145,65 @@ export const ChatInterface: React.FC = () => {
                     <div 
                       className="text-sm sm:text-base leading-relaxed"
                       dangerouslySetInnerHTML={{ 
-                      __html: message.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+                        __html: (() => {
+                          let html = message.content;
+                          // Convert markdown headings to HTML (process from most # to least to avoid conflicts)
+                          html = html.replace(/^#### (.*$)/gim, '<h4 class="text-sm font-semibold mt-3 mb-1">$1</h4>');
+                          html = html.replace(/^### (.*$)/gim, '<h3 class="text-base font-semibold mt-4 mb-2">$1</h3>');
+                          html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-semibold mt-4 mb-2">$1</h2>');
+                          html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl font-semibold mt-4 mb-2">$1</h1>');
+                          
+                          // Convert line breaks first (but preserve for lists)
+                          // Split by lines to process lists properly
+                          const lines = html.split('\n');
+                          const processedLines: string[] = [];
+                          let inList = false;
+                          
+                          for (let i = 0; i < lines.length; i++) {
+                            const line = lines[i];
+                            // Check if line is a bullet point (starts with - or •)
+                            if (/^\s*[-•]\s+/.test(line)) {
+                              if (!inList) {
+                                processedLines.push('<ul class="list-disc ml-6 my-2 space-y-1">');
+                                inList = true;
+                              }
+                              processedLines.push(`<li>${line.replace(/^\s*[-•]\s+/, '')}</li>`);
+                            }
+                            // Check if line is a numbered list
+                            else if (/^\s*\d+\.\s+/.test(line)) {
+                              if (!inList) {
+                                processedLines.push('<ul class="list-decimal ml-6 my-2 space-y-1">');
+                                inList = true;
+                              }
+                              processedLines.push(`<li>${line.replace(/^\s*\d+\.\s+/, '')}</li>`);
+                            }
+                            // Regular line
+                            else {
+                              if (inList) {
+                                processedLines.push('</ul>');
+                                inList = false;
+                              }
+                              if (line.trim()) {
+                                processedLines.push(line);
+                              }
+                            }
+                          }
+                          
+                          // Close any open list
+                          if (inList) {
+                            processedLines.push('</ul>');
+                          }
+                          
+                          html = processedLines.join('\n');
+                          
+                          // Convert bold markdown (after processing lists)
+                          html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                          // Convert italic markdown (only single asterisks that aren't part of bold)
+                          html = html.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, '<em>$1</em>');
+                          // Convert remaining line breaks
+                          html = html.replace(/\n/g, '<br/>');
+                          return html;
+                        })()
                       }} 
                     />
                   </div>
